@@ -10,7 +10,7 @@
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ReservedRoom>()
-                .HasKey(rr => new { rr.ReservationId, rr.RoomId });
+                .HasKey(rr => new { rr.Id, rr.ReservationId, rr.RoomId });
 
 
             modelBuilder.Entity<Currency>().HasData(

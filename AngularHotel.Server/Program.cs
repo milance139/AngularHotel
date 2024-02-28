@@ -3,6 +3,9 @@ global using Microsoft.EntityFrameworkCore;
 global using AngularHotel.Server.Data;
 global using AngularHotel.Server.Services.AuthService;
 global using AngularHotel.Server.Services.RoomService;
+global using AngularHotel.Server.Services.CurrencyService;
+global using AngularHotel.Server.Services.ReservationService;
+global using AngularHotel.Server.Services.ComiteeService;
 global using AngularHotel.Shared.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -51,6 +54,9 @@ builder.Services.AddSwaggerGen(options =>
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<ICurrencyService, CurrencyService>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
+builder.Services.AddScoped<ICommitteeService, CommitteeService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

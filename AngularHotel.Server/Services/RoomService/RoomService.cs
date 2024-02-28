@@ -75,7 +75,7 @@ namespace AngularHotel.Server.Services.RoomService
             dbRoom.Code = room.Code;
             dbRoom.RoomType = room.RoomType;
 
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
             return new ServiceResponse<Room> { Data = room };
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace AngularHotel.Shared.Models.Entities
@@ -13,16 +14,15 @@ namespace AngularHotel.Shared.Models.Entities
         public DateTime To { get; set; }
         public int ReservationCommitteeId { get; set; }
         public User ReservationCommittee { get; set; }
-
         [Column(TypeName = "decimal(18,2)")]
-        public decimal? Discount { get; set; }
-
+        public decimal OriginalPrice { get; set; }
+        public int Discount { get; set; } = 0;
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
-
         public int CurrencyId { get; set; }
         public Currency Currency { get; set; }
         public bool IsCancelled { get; set; } = false;
-        List<ReservedRoom> ReservedRooms { get; set; }
+        [JsonIgnore]
+        public List<ReservedRoom> ReservedRooms { get; set; }
     }
 }
