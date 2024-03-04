@@ -18,7 +18,7 @@ namespace AngularHotel.Server.Controllers
         }
 
         [HttpGet, Authorize(Roles = "Admin")]
-        [Route("get-all-comitees")]
+        [Route("get-all-comittees")]
         public async Task<ActionResult<ServiceResponse<List<CommitteeResponseModel>>>> GetAllCommittees()
         {
             var result = await _comiteeService.GetAllComitees();

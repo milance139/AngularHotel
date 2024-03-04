@@ -1,4 +1,6 @@
-﻿namespace AngularHotel.Server.Data
+﻿using AngularHotel.Server.Data.Seeders;
+
+namespace AngularHotel.Server.Data
 {
     public class DataContext : DbContext
     {
@@ -7,19 +9,15 @@
 
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override async void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ReservedRoom>()
                 .HasKey(rr => new { rr.Id, rr.ReservationId, rr.RoomId });
 
-
-            modelBuilder.Entity<Currency>().HasData(
-                    new Currency { Id = 1, Name = "BAM", Price = 1 }, 
-                    new Currency { Id = 2, Name = "USD", Price = 1.81m },
-                    new Currency { Id = 3, Name = "EUR", Price = 1.95m },
-                    new Currency { Id = 4, Name = "GBP", Price = 2.28m } 
-                );
-
+            AdminSeeder.Seed(modelBuilder);
+            CurrencySeeder.Seed(modelBuilder);
+            RoomSeeder.Seed(modelBuilder);
+            ReservationSeeder.Seed(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
         }

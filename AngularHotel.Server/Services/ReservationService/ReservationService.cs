@@ -1,16 +1,22 @@
 ﻿using AngularHotel.Shared.Models;
+using AngularHotel.Shared.Models.Entities;
 using AngularHotel.Shared.Models.RequestModels.Reservation;
+using AngularHotel.Shared.Models.ResponseModels.CurrencyResponse;
 using AngularHotel.Shared.Models.ResponseModels.Reservation;
+using System.Collections.Generic;
+
 
 namespace AngularHotel.Server.Services.ReservationService
 {
     public class ReservationService : IReservationService
     {
         private readonly DataContext _context;
+        private readonly ICurrencyService _currencyService;
 
-        public ReservationService(DataContext context)
+        public ReservationService(DataContext context, ICurrencyService currencyService)
         {
             _context = context;
+            _currencyService = currencyService;
         }
 
         public async Task<ServiceResponse<bool>> CancelReservation(int reservationId)
@@ -50,20 +56,22 @@ namespace AngularHotel.Server.Services.ReservationService
                 };
             }
 
-            foreach (var roomId in requestModel.ReservedRoomIds)
+            var conflictingRooms = await _context.ReservedRooms
+                                                 .Where(rr => requestModel.ReservedRoomIds.Contains(rr.RoomId) &&
+                                                               !rr.Reservation.IsCancelled &&
+                                                               (rr.Reservation.From <= requestModel.To && rr.Reservation.To >= requestModel.From))
+                                                 .Select(rr => rr.RoomId)
+                                                 .ToListAsync();
+
+            if (conflictingRooms.Any())
             {
-                var roomNotAvailable = await _context.ReservedRooms
-                                            .AnyAsync(rr => rr.RoomId == roomId &&
-                                                !rr.Reservation.IsCancelled &&
-                                                (rr.Reservation.From <= requestModel.To && rr.Reservation.To >= requestModel.From));
-                if (roomNotAvailable)
+                // At least one room is not available for the specified dates
+                var unavailableRoomId = conflictingRooms.First();
+                return new ServiceResponse<Reservation>
                 {
-                    return new ServiceResponse<Reservation>
-                    {
-                        Message = $"Room wtih ID {roomId} is not available for the specified dates.",
-                        Success = false
-                    };
-                }
+                    Message = $"Room with ID {unavailableRoomId} is not available for the specified dates.",
+                    Success = false
+                };
             }
 
             var reservation = new Reservation
@@ -75,13 +83,8 @@ namespace AngularHotel.Server.Services.ReservationService
                 TotalPrice = GetTotalPrice(requestModel.Discount, requestModel.OriginalPrice),
                 CurrencyId = requestModel.CurrencyId,
                 ReservationCommitteeId = requestModel.ReservationCommitteeId,
-                ReservedRooms = new List<ReservedRoom>()
+                ReservedRooms = requestModel.ReservedRoomIds.Select(roomId => new ReservedRoom { RoomId = roomId }).ToList()
             };
-
-            foreach (var roomId in requestModel.ReservedRoomIds)
-            {
-                reservation.ReservedRooms.Add(new ReservedRoom { RoomId = roomId });
-            }
 
             _context.Reservations.Add(reservation);
             await _context.SaveChangesAsync();
@@ -94,44 +97,58 @@ namespace AngularHotel.Server.Services.ReservationService
             };
         }
 
-        public async Task<ServiceResponse<List<ReservationResponseModel>>> GetAllFinishedReservations()
+        public async Task<ServiceResponse<bool>> DeleteReservation(int reservationId)
+        {
+            var dbReservation = await _context.Reservations.FindAsync(reservationId);
+            if (dbReservation == null)
+            {
+                return new ServiceResponse<bool>
+                {
+                    Data = false,
+                    Message = "Reservation not found",
+                    Success = false
+                };
+            }
+
+            _context.Reservations.Remove(dbReservation);
+            await _context.SaveChangesAsync();
+            return new ServiceResponse<bool> { Data = true, Message = "Reservation deleted successfully", Success = true };
+        }
+
+        public async Task<ServiceResponse<List<ReservationArchiveResponseModel>>> GetAllArchivedReservations()
         {
             try
             {
-                var finishedReservations = await _context.Reservations
-                    .Where(r => r.IsCancelled || r.To < DateTime.Now)
-                    .Include(r => r.ReservationCommittee)
-                    .Include(r => r.Currency)
-                    .Include(r => r.ReservedRooms)
-                        .ThenInclude(rr => rr.Room)
-                    .ToListAsync();
+                var response = await _context.Reservations
+                                             .Select(r => new ReservationArchiveResponseModel
+                                             {
+                                                 From = r.From,
+                                                 To = r.To,
+                                                 ReservationCommitteeFullName = $"{r.ReservationCommittee.Name} {r.ReservationCommittee.LastName}",
+                                                 OriginalPrice = r.OriginalPrice,
+                                                 Discount = r.Discount,
+                                                 TotalPrice = r.TotalPrice,
+                                                 Currency = r.Currency,
+                                                 TotalPriceInBAMAndEur = _currencyService.GetPriceInBAMAndEur(r.TotalPrice, r.Currency).Data,
+                                                 IsCancelled = r.IsCancelled,
+                                                 ReservedRooms = r.ReservedRooms.Select(rr => rr.Room.Name).ToList()
+                                             })
+                                             .ToListAsync();
 
-                var response = finishedReservations.Select(r => new ReservationResponseModel
-                {
-                    From = r.From,
-                    To = r.To,
-                    ReservationCommitteeFullName = $"{r.ReservationCommittee.Name} {r.ReservationCommittee.LastName}",
-                    OriginalPrice = r.OriginalPrice,
-                    Discount = r.Discount,
-                    TotalPrice = r.TotalPrice,
-                    Currency = r.Currency,
-                    IsCancelled = r.IsCancelled,
-                    ReservedRooms = r.ReservedRooms.Select(rr => rr.Room.Name).ToList()
-                }).ToList();
 
-                return new ServiceResponse<List<ReservationResponseModel>>
+                return new ServiceResponse<List<ReservationArchiveResponseModel>>
                 {
                     Success = true,
-                    Message = "Finished reservations retrieved successfully.",
+                    Message = "Archived reservations retrieved successfully.",
                     Data = response
                 };
             }
             catch (Exception ex)
             {
-                return new ServiceResponse<List<ReservationResponseModel>>
+                return new ServiceResponse<List<ReservationArchiveResponseModel>>
                 {
                     Success = false,
-                    Message = $"Failed to retrieve finished reservations: {ex.Message}",
+                    Message = $"Failed to retrieve archived reservations: {ex.Message}",
                     Data = null
                 };
             }
@@ -144,26 +161,22 @@ namespace AngularHotel.Server.Services.ReservationService
             try
             {
                 var reservations = await _context.Reservations
-                    .Include(r => r.ReservationCommittee)
-                    .Include(r => r.Currency)
-                    .Include(r => r.ReservedRooms)
-                        .ThenInclude(rr => rr.Room)
-                    .ToListAsync();
+                                                  .Select(r => new ReservationResponseModel
+                                                  {
+                                                      Id = r.Id,
+                                                      From = r.From,
+                                                      To = r.To,
+                                                      ReservationCommitteeFullName = $"{r.ReservationCommittee.Name} {r.ReservationCommittee.LastName}",
+                                                      OriginalPrice = r.OriginalPrice,
+                                                      Discount = r.Discount,
+                                                      TotalPrice = r.TotalPrice,
+                                                      Currency = r.Currency,
+                                                      IsCancelled = r.IsCancelled,
+                                                      ReservedRooms = r.ReservedRooms.Select(rr => rr.Room.Name).ToList()
+                                                  })
+                                                  .ToListAsync();
 
-                var response = reservations.Select(r => new ReservationResponseModel
-                {
-                    From = r.From,
-                    To = r.To,
-                    ReservationCommitteeFullName = $"{r.ReservationCommittee.Name} {r.ReservationCommittee.LastName}",
-                    OriginalPrice = r.OriginalPrice,
-                    Discount = r.Discount,
-                    TotalPrice = r.TotalPrice,
-                    Currency = r.Currency,
-                    IsCancelled = r.IsCancelled,
-                    ReservedRooms = r.ReservedRooms.Select(rr => rr.Room.Name).ToList()
-                }).ToList();
-
-                serviceResponse.Data = response;
+                serviceResponse.Data = reservations;
                 serviceResponse.Message = "All reservations retrieved successfully.";
                 serviceResponse.Success = true;
             }

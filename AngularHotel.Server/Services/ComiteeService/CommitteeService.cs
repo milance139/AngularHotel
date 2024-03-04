@@ -5,12 +5,10 @@ namespace AngularHotel.Server.Services.ComiteeService
     public class CommitteeService : ICommitteeService
     {
         private readonly DataContext _context;
-        private readonly IAuthService _authService;
 
-        public CommitteeService(DataContext context, IAuthService authService)
+        public CommitteeService(DataContext context)
         {
             _context = context;
-            _authService = authService;
         }
 
         public async Task<ServiceResponse<List<CommitteeResponseModel>>> GetAllComitees()
@@ -18,11 +16,10 @@ namespace AngularHotel.Server.Services.ComiteeService
             try
             {
                 var committees = await _context.Users
-                    .Where(c => c.Id != _authService.GetUserId())
                     .Select(c => new CommitteeResponseModel
                     {
                         Id = c.Id,
-                        Name = c.Name,
+                        FirstName = c.Name,
                         LastName = c.LastName,
                         Email = c.Email,
                         PhoneNumber = c.PhoneNumber

@@ -34,7 +34,7 @@ namespace AngularHotel.Server.Controllers
         }
 
         [HttpPut, Authorize(Roles = "Admin")]
-        public async Task<ActionResult<ServiceResponse<Currency>>> UpdateRoom(Currency currency)
+        public async Task<ActionResult<ServiceResponse<Currency>>> UpdateCurrency(Currency currency)
         {
             var result = await _currencyService.UpdateCurrency(currency);
 

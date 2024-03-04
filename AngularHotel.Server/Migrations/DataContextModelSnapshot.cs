@@ -88,7 +88,7 @@ namespace AngularHotel.Server.Migrations
                     b.Property<bool>("IsCancelled")
                         .HasColumnType("bit");
 
-                    b.Property<decimal?>("OriginalPrice")
+                    b.Property<decimal>("OriginalPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("ReservationCommitteeId")
@@ -107,24 +107,120 @@ namespace AngularHotel.Server.Migrations
                     b.HasIndex("ReservationCommitteeId");
 
                     b.ToTable("Reservations");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CurrencyId = 1,
+                            Discount = 10,
+                            From = new DateTime(2024, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCancelled = false,
+                            OriginalPrice = 100m,
+                            ReservationCommitteeId = 1,
+                            To = new DateTime(2024, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TotalPrice = 90m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CurrencyId = 2,
+                            Discount = 20,
+                            From = new DateTime(2024, 3, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCancelled = false,
+                            OriginalPrice = 150m,
+                            ReservationCommitteeId = 1,
+                            To = new DateTime(2024, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TotalPrice = 120m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CurrencyId = 1,
+                            Discount = 0,
+                            From = new DateTime(2024, 3, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCancelled = false,
+                            OriginalPrice = 200m,
+                            ReservationCommitteeId = 1,
+                            To = new DateTime(2024, 3, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TotalPrice = 200m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CurrencyId = 2,
+                            Discount = 0,
+                            From = new DateTime(2024, 3, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCancelled = false,
+                            OriginalPrice = 100m,
+                            ReservationCommitteeId = 1,
+                            To = new DateTime(2024, 3, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TotalPrice = 100m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CurrencyId = 1,
+                            Discount = 10,
+                            From = new DateTime(2024, 3, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            IsCancelled = false,
+                            OriginalPrice = 180m,
+                            ReservationCommitteeId = 1,
+                            To = new DateTime(2024, 3, 28, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            TotalPrice = 162m
+                        });
                 });
 
             modelBuilder.Entity("AngularHotel.Shared.Models.Entities.ReservedRoom", b =>
                 {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
                     b.Property<int>("ReservationId")
                         .HasColumnType("int");
 
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.HasKey("Id", "ReservationId", "RoomId");
 
-                    b.HasKey("ReservationId", "RoomId");
+                    b.HasIndex("ReservationId");
 
                     b.HasIndex("RoomId");
 
                     b.ToTable("ReservedRooms");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ReservationId = 1,
+                            RoomId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ReservationId = 2,
+                            RoomId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ReservationId = 3,
+                            RoomId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ReservationId = 4,
+                            RoomId = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ReservationId = 5,
+                            RoomId = 5
+                        });
                 });
 
             modelBuilder.Entity("AngularHotel.Shared.Models.Entities.Room", b =>
@@ -159,6 +255,68 @@ namespace AngularHotel.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Rooms");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Capacity = 4,
+                            Code = "R1",
+                            Description = "Description of Room 1",
+                            IsDeleted = false,
+                            Name = "Room 1",
+                            RoomType = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Capacity = 6,
+                            Code = "R2",
+                            Description = "Description of Room 2",
+                            IsDeleted = false,
+                            Name = "Room 2",
+                            RoomType = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Capacity = 2,
+                            Code = "R3",
+                            Description = "Description of Room 3",
+                            IsDeleted = false,
+                            Name = "Room 3",
+                            RoomType = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Capacity = 3,
+                            Code = "R4",
+                            Description = "Description of Room 4",
+                            IsDeleted = false,
+                            Name = "Room 4",
+                            RoomType = 0
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Capacity = 5,
+                            Code = "R5",
+                            Description = "Description of Room 5",
+                            IsDeleted = false,
+                            Name = "Room 5",
+                            RoomType = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Capacity = 4,
+                            Code = "R6",
+                            Description = "Description of Room 6",
+                            IsDeleted = false,
+                            Name = "Room 6",
+                            RoomType = 2
+                        });
                 });
 
             modelBuilder.Entity("AngularHotel.Shared.Models.Entities.User", b =>
@@ -203,6 +361,20 @@ namespace AngularHotel.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            DateCreated = new DateTime(2024, 3, 4, 16, 42, 49, 232, DateTimeKind.Local).AddTicks(8028),
+                            Email = "admin@live.com",
+                            LastName = "User",
+                            Name = "Admin",
+                            PasswordHash = new byte[] { 45, 167, 168, 60, 158, 91, 69, 56, 88, 141, 98, 62, 14, 61, 161, 137, 255, 59, 242, 156, 208, 94, 190, 121, 7, 254, 216, 181, 108, 144, 181, 232, 156, 167, 43, 235, 254, 165, 0, 237, 77, 228, 249, 234, 127, 153, 115, 103, 244, 14, 58, 209, 48, 211, 116, 194, 236, 5, 57, 183, 195, 85, 60, 106 },
+                            PasswordSalt = new byte[] { 54, 228, 210, 83, 109, 41, 174, 168, 107, 240, 120, 105, 254, 27, 29, 45, 236, 160, 140, 66, 176, 127, 198, 151, 25, 183, 151, 139, 254, 100, 79, 237, 165, 123, 212, 52, 81, 167, 154, 185, 166, 124, 98, 40, 162, 37, 198, 250, 96, 47, 85, 230, 83, 127, 182, 185, 76, 175, 223, 59, 53, 247, 215, 129, 102, 51, 14, 161, 232, 16, 190, 154, 30, 95, 154, 238, 10, 64, 39, 118, 243, 249, 153, 210, 1, 64, 213, 240, 53, 217, 31, 96, 7, 162, 151, 145, 152, 152, 85, 248, 172, 161, 37, 92, 227, 30, 122, 174, 10, 29, 122, 16, 54, 134, 201, 102, 171, 70, 153, 38, 178, 21, 190, 4, 153, 123, 109, 197 },
+                            PhoneNumber = "123456789",
+                            Role = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("AngularHotel.Shared.Models.Entities.Reservation", b =>

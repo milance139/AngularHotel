@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34316.72
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularHotel.Shared", "AngularHotel.Shared\AngularHotel.Shared.csproj", "{275032C1-8864-4BE6-9588-3501D171DD56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularHotel.Shared", "AngularHotel.Shared\AngularHotel.Shared.csproj", "{275032C1-8864-4BE6-9588-3501D171DD56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AngularHotel.Server", "AngularHotel.Server\AngularHotel.Server.csproj", "{DAF124BF-3B66-41C1-80A4-17AAEFBA6DB6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularHotel.Server", "AngularHotel.Server\AngularHotel.Server.csproj", "{DAF124BF-3B66-41C1-80A4-17AAEFBA6DB6}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "AngularHotel.Client", "AngularHotel.Client\AngularHotel.Client.esproj", "{C47BE337-11F7-4936-93C0-F8354D13040C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,12 @@ Global
 		{DAF124BF-3B66-41C1-80A4-17AAEFBA6DB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAF124BF-3B66-41C1-80A4-17AAEFBA6DB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAF124BF-3B66-41C1-80A4-17AAEFBA6DB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C47BE337-11F7-4936-93C0-F8354D13040C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C47BE337-11F7-4936-93C0-F8354D13040C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C47BE337-11F7-4936-93C0-F8354D13040C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C47BE337-11F7-4936-93C0-F8354D13040C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C47BE337-11F7-4936-93C0-F8354D13040C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C47BE337-11F7-4936-93C0-F8354D13040C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -60,6 +60,11 @@ namespace AngularHotel.Server.Services.RoomService
         {
             var dbRoom = await _context.Rooms.FindAsync(room.Id);
 
+           //await _context.Rooms.
+           //     Where(x => x.Id == room.Id)
+           //     .ExecuteUpdateAsync(r =>
+           //     r.SetProperty(x => x.Name, room.Name));
+
             if (dbRoom == null)
             {
                 return new ServiceResponse<Room>

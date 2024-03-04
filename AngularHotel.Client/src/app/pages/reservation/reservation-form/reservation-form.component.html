@@ -1,0 +1,57 @@
+<h5 class="mb-5 text-lg font-bold tracking-tight text-gray-900 dark:text-white">Reservation Details</h5>
+<form [formGroup]="reservationForm" class="w-full" (ngSubmit)="onSubmit()" novalidate>
+  <div class="mb-5">
+    <label for="from" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">From</label>
+    <input type="date" id="from" class="form-control" formControlName="from">
+  </div>
+  <div class="mb-5">
+    <label for="to" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">To</label>
+    <input type="date" id="to" class="form-control" formControlName="to">
+  </div>
+  <div class="mb-5">
+    <label for="reservationCommittee" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Reservation Committee</label>
+    <select id="reservationCommittee" class="form-control" formControlName="reservationCommitteeId">
+      <option *ngFor="let committeeMember of reservationCommitteeMembers" [value]="committeeMember.id">{{ committeeMember.fullName }}</option>
+    </select>
+    <!-- Add validation if necessary -->
+  </div>
+  <div class="mb-5">
+    <label for="originalPrice" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Original Price</label>
+    <input type="number" id="originalPrice" class="form-control" formControlName="originalPrice">
+  </div>
+  <div class="mb-5">
+    <label for="discount" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Discount</label>
+    <input type="number" id="discount" class="form-control" formControlName="discount">
+    @if (reservationForm.get('discount')?.hasError('minimum') && reservationForm.get('discount')?.touched) {
+    <div class="form-error">Discount must be beteween 1 and 100 required</div>
+    }
+  </div>
+  <div class="mb-5">
+    <label for="totalPrice" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total Price</label>
+    <input type="text" id="totalPrice" class="form-control" formControlName="totalPrice" readonly>
+    <!-- Display the calculated total price -->
+  </div>
+  <div class="mb-5">
+    <label for="currency" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Currency</label>
+    <select id="currency" class="form-control" formControlName="currencyId">
+      <option *ngFor="let currency of currencies" [value]="currency.id">{{ currency.name }}</option>
+    </select>
+    <!-- Add validation if necessary -->
+  </div>
+  <div class="mb-5">
+    <label for="reservedRooms" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Room</label>
+    <select id="reservedRooms" class="form-control" formControlName="reservedRoomIds">
+      <option *ngFor="let room of reservedRooms" [value]="room.id">{{ room.name }}</option>
+    </select>
+    <!-- Add validation if necessary -->
+  </div>
+
+  <button type="submit"
+          class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
+    Submit
+  </button>
+  <button type="button" (click)="onClose()"
+          class="text-white ms-2 bg-gray-700 hover:bg-gray-800 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
+    Cancel
+  </button>
+</form>

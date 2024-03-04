@@ -1,0 +1,78 @@
+
+
+<div class="example-container mat-elevation-z8 mb-10">
+
+  
+  <mat-table [dataSource]="dataSource" matSort>
+
+    <caption class="p-5 text-lg flex font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800 justify-between">
+      <p class="flex items-center">Archived Reservations</p>
+      <div class="w-1/2">
+        <mat-form-field class="w-full">
+          <input matInput #filterInput (keyup)="applyFilter(filterInput.value)" placeholder="Filter" class="w-full bg-gray-100 rounded-md py-2 px-4 focus:outline-none focus:ring focus:border-blue-500">
+        </mat-form-field>
+      </div>
+    </caption>
+
+    <ng-container matColumnDef="from">
+      <mat-header-cell class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400" *matHeaderCellDef mat-sort-header> From </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.from | date: 'dd.MM.yyyy'}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="to">
+      <mat-header-cell class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400" *matHeaderCellDef mat-sort-header> To </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.to | date: 'dd.MM.yyyy'}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="original_price">
+      <mat-header-cell class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400" *matHeaderCellDef mat-sort-header> Original price </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.originalPrice}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="discount">
+      <mat-header-cell class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400" *matHeaderCellDef mat-sort-header> Discount </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.discount}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="total_price">
+      <mat-header-cell class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400" *matHeaderCellDef mat-sort-header> Total price </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.totalPrice}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="currency.name">
+      <mat-header-cell class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400" *matHeaderCellDef mat-sort-header> Currency </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.currency.name}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="total_price_bam">
+      <mat-header-cell class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400" *matHeaderCellDef mat-sort-header> Total price in BAM </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.totalPriceInBAMAndEur.totalPriceBam | number : '1.2-2'}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="total_price_eur">
+      <mat-header-cell class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400" *matHeaderCellDef mat-sort-header> Total price in EUR </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.totalPriceInBAMAndEur.totalPriceEur | number : '1.2-2'}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="committee">
+      <mat-header-cell class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400" *matHeaderCellDef mat-sort-header> Committee </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.reservationCommitteeFullName}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="reserved_rooms">
+      <mat-header-cell class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400" *matHeaderCellDef mat-sort-header> Reserved room </mat-header-cell>
+      <mat-cell *matCellDef="let row"> {{row.reservedRooms[0]}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+
+  <div class="mt-4 text-center">
+    <p class="text-lg font-bold">Total revenue generated:</p>
+    <p class="text-2xl font-bold mb-2">{{ getTotalPriceBamSum() | number : '1.2-2' }} BAM</p>
+    <p class="text-2xl font-bold">{{ getTotalPriceEurSum() | number : '1.2-2' }} €</p>
+  </div>
+</div>

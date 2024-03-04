@@ -35,10 +35,10 @@ namespace AngularHotel.Server.Controllers
         }
 
         [HttpGet]
-        [Route("get-all-finished-reservations")]
-        public async Task<ActionResult<ServiceResponse<List<ReservationResponseModel>>>> GetAllFinishedReservations()
+        [Route("get-all-archived-reservations")]
+        public async Task<ActionResult<ServiceResponse<List<ReservationResponseModel>>>> GetAllArchivedReservations()
         {
-            var result = await _reservationService.GetAllFinishedReservations();
+            var result = await _reservationService.GetAllArchivedReservations();
 
             return Ok(result);
         }
@@ -59,5 +59,14 @@ namespace AngularHotel.Server.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete("{reservationId}"), Authorize(Roles = "Admin")]
+        public async Task<ActionResult<ServiceResponse<bool>>> DeleteReservation(int reservationId)
+        {
+            var result = await _reservationService.DeleteReservation(reservationId);
+
+            return Ok(result);
+        }
+
     }
 }

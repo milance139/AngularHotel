@@ -1,0 +1,26 @@
+<h5 class="mb-5 text-lg font-bold tracking-tight text-gray-900 dark:text-white ">Room Details</h5>
+<form [formGroup]="currencyForm" class="w-full" (ngSubmit)="onSubmit()" novalidate>
+  <div class="mb-5">
+    <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Name</label>
+    <input type="text" id="name" class="form-control" placeholder="Name" formControlName="name">
+    @if (currencyForm.get('name')?.hasError('required') && currencyForm.get('name')?.touched) {
+    <div class="form-error">Name is required</div>
+    }
+  </div>
+  <div class="mb-5">
+    <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Price</label>
+    <input type="text" id="price" class="form-control" placeholder="Price" formControlName="price">
+    @if (currencyForm.get('price')?.hasError('required') && currencyForm.get('price')?.touched) {
+    <div class="form-error">Price is required</div>
+    }
+  </div>
+
+  <button type="submit"
+          class="text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
+    Submit
+  </button>
+  <button type="button" (click)="onClose()"
+          class="text-white ms-2 bg-gray-700 hover:bg-gray-800 font-medium rounded-lg w-full sm:w-auto px-5 py-2.5 text-center">
+    Cancel
+  </button>
+</form>
